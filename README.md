@@ -24,7 +24,7 @@ def get_stock_price(symbol, date):
         return "NA", "NA"
 ```
 
-### 2. JSON structure for GPT function definition
+### 2. JSON structure for GPT function definition:
 
 Azure OpenAI GPT models v0613 were trained to understand function structure that contain "**name**" and "**parameters**" fields. In my example, I indicate that the mddel can extract and match 2 mandatory properties: stock symbol for requested company and date in _YYYY-MM-DD_ format.
 
@@ -51,9 +51,34 @@ functions = [
 ]
 ```
 
-### 3. Helper function to check provided arguments
+### 3. Helper function to check provided arguments:
 
 I copied function "**check_args**" from [Azure Samples code](https://github.com/Azure-Samples/openai/tree/main/Basic_Samples/Functions) "as is". It helps to verify whether GPT model provided all requirements arguments / parameters, and also if it tried to submit ones which our function doesn't expect.
 
-### 4. Helper function to check provided arguments
+### 4. Helper function to interact with Azure OpenAI GPT model:
 
+This helper function follows 3-step logic:
+1. First, it submits user's prompts, informs GPT model about available functions and sets calling mode to "**auto**", so that the model automatically decides whether it wants to call a function based on the prompt details and matching function's capabilities
+    ``` Python
+    response = openai.ChatCompletion.create(
+        deployment_id=aoai_deployment,
+        messages=messages,
+        functions=functions,
+        function_call="auto", 
+    )
+    ```
+2. Next, it checks what functions the model wanted to call, if any.
+   ``` Python
+    response_message = response["choices"][0]["message"]
+
+    # Step 2: Check if GPT model wanted to call a function
+    if response_message.get("function_call"):
+        print("Recommended function call:")
+        print(response_message.get("function_call"))
+        print()
+   ```
+3. Finally, if there is a matching function and it passes previous help function's test on validity of its arguments, I call the target function with parameter values extracted from the user's prompt.
+   ``` Python
+   function_response1, function_response2 = function_to_call(function_args["symbol"], function_args["date"])
+   function_response = f"Lowest stock price: {function_response1}, Highest stock price: {function_response2}"
+   ```
