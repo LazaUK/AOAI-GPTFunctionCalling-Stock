@@ -82,7 +82,7 @@ c. Finally, if there is a matching function and it passes previous help function
    function_response1, function_response2 = function_to_call(function_args["symbol"], function_args["date"])
    function_response = f"Lowest stock price: {function_response1}, Highest stock price: {function_response2}"
    ```
-### 5. Practical testing
+### 5. Practical testing:
 
 The last cell in the notebook helps to test everything end to end. On requested stock price for Microsoft shares from 20th of July, 2023 it correctly retrieves the lowest and highest prices of the day.
 ``` PowerShell
