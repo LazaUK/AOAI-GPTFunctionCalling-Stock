@@ -4,9 +4,9 @@ As of 20th of July 2023, Azure OpenAI now supports the use of Function Calling w
 
 ### 0. Pre-requisites:
 
-a. Install the latest version of openai Python package and **openai.api_version** variable to July 2023 version or above;
-b. Retrieve Azure OpenAI GPT model deployment name, API endpoint and API key and assign them to "**OPENAI_API_DEPLOY**", "**OPENAI_API_BASE**" and "**OPENAI_API_KEY**" environment variables;
-c. Retrieve your Alpha Vantage API key and assign it to "**ALPHAVANTAGE_API_KEY**" environment variable.
+1. Install the latest version of openai Python package and **openai.api_version** variable to July 2023 version or above;
+2. Retrieve Azure OpenAI GPT model deployment name, API endpoint and API key and assign them to "**OPENAI_API_DEPLOY**", "**OPENAI_API_BASE**" and "**OPENAI_API_KEY**" environment variables;
+3. Retrieve your Alpha Vantage API key and assign it to "**ALPHAVANTAGE_API_KEY**" environment variable.
 
 ### 1. Function to get stock price from Alpha Vantage API:
 
@@ -58,7 +58,7 @@ I copied function "**check_args**" from [Azure Samples code](https://github.com/
 ### 4. Helper function to interact with Azure OpenAI GPT model:
 
 This helper function follows 3-step logic:
-a. First, it submits user's prompts, informs GPT model about available functions and sets calling mode to "**auto**", so that the model automatically decides whether it wants to call a function based on the prompt details and matching function's capabilities
+1. First, it submits user's prompts, informs GPT model about available functions and sets calling mode to "**auto**", so that the model automatically decides whether it wants to call a function based on the prompt details and matching function's capabilities
     ``` Python
     response = openai.ChatCompletion.create(
         deployment_id=aoai_deployment,
@@ -67,7 +67,7 @@ a. First, it submits user's prompts, informs GPT model about available functions
         function_call="auto", 
     )
     ```
-b. Next, it checks what functions the model wanted to call, if any.
+2. Next, it checks what functions the model wanted to call, if any.
    ``` Python
     response_message = response["choices"][0]["message"]
 
@@ -77,7 +77,7 @@ b. Next, it checks what functions the model wanted to call, if any.
         print(response_message.get("function_call"))
         print()
    ```
-c. Finally, if there is a matching function and it passes previous help function's test on validity of its arguments, I call the target function with parameter values extracted from the user's prompt.
+3. Finally, if there is a matching function and it passes previous help function's test on validity of its arguments, I call the target function with parameter values extracted from the user's prompt.
    ``` Python
    function_response1, function_response2 = function_to_call(function_args["symbol"], function_args["date"])
    function_response = f"Lowest stock price: {function_response1}, Highest stock price: {function_response2}"
