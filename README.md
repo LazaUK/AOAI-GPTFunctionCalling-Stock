@@ -51,5 +51,9 @@ functions = [
 ]
 ```
 
+### 3. Helper function to check provided arguments
 
-<TBU: I'll document here the logic of the code>
+I copied function "**check_args**" from [Azure Samples code](https://github.com/Azure-Samples/openai/tree/main/Basic_Samples/Functions) "as is". It helps to verify whether GPT model provided all requirements arguments / parameters, and also if it tried to submit ones which our function doesn't expect.
+
+### 4. Helper function to check provided arguments
+
