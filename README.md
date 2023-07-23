@@ -4,9 +4,9 @@ As of 20th of July 2023, Azure OpenAI now supports the use of Function Calling w
 
 ### 0. Pre-requisites:
 
-1. Installa the latest version of openai Python package and **openai.api_version** variable to July 2023 version or above;
-2. Retrieve Azure OpenAI GPT model deployment name, API endpoint and API key and assign them to "**OPENAI_API_DEPLOY**", "**OPENAI_API_BASE**" and "**OPENAI_API_KEY**" environment variables;
-3. Retrieve your Alpha Vantage API key and assign it to "**ALPHAVANTAGE_API_KEY**" environment variable.
+a. Install the latest version of openai Python package and **openai.api_version** variable to July 2023 version or above;
+b. Retrieve Azure OpenAI GPT model deployment name, API endpoint and API key and assign them to "**OPENAI_API_DEPLOY**", "**OPENAI_API_BASE**" and "**OPENAI_API_KEY**" environment variables;
+c. Retrieve your Alpha Vantage API key and assign it to "**ALPHAVANTAGE_API_KEY**" environment variable.
 
 ### 1. Function to get stock price from Alpha Vantage API:
 
@@ -26,7 +26,7 @@ def get_stock_price(symbol, date):
 
 ### 2. JSON structure for GPT function definition:
 
-Azure OpenAI GPT models v0613 were trained to understand function structure that contain "**name**" and "**parameters**" fields. In my example, I indicate that the mddel can extract and match 2 mandatory properties: stock symbol for requested company and date in _YYYY-MM-DD_ format.
+Azure OpenAI GPT models v0613 were trained to understand function structure that contain "**name**" and "**parameters**" fields. In my example, I indicate that the model can extract and match 2 mandatory properties: stock symbol for requested company and date in _YYYY-MM-DD_ format.
 
 ``` JSON
 functions = [
@@ -58,7 +58,7 @@ I copied function "**check_args**" from [Azure Samples code](https://github.com/
 ### 4. Helper function to interact with Azure OpenAI GPT model:
 
 This helper function follows 3-step logic:
-1. First, it submits user's prompts, informs GPT model about available functions and sets calling mode to "**auto**", so that the model automatically decides whether it wants to call a function based on the prompt details and matching function's capabilities
+a. First, it submits user's prompts, informs GPT model about available functions and sets calling mode to "**auto**", so that the model automatically decides whether it wants to call a function based on the prompt details and matching function's capabilities
     ``` Python
     response = openai.ChatCompletion.create(
         deployment_id=aoai_deployment,
@@ -67,7 +67,7 @@ This helper function follows 3-step logic:
         function_call="auto", 
     )
     ```
-2. Next, it checks what functions the model wanted to call, if any.
+b. Next, it checks what functions the model wanted to call, if any.
    ``` Python
     response_message = response["choices"][0]["message"]
 
@@ -77,8 +77,32 @@ This helper function follows 3-step logic:
         print(response_message.get("function_call"))
         print()
    ```
-3. Finally, if there is a matching function and it passes previous help function's test on validity of its arguments, I call the target function with parameter values extracted from the user's prompt.
+c. Finally, if there is a matching function and it passes previous help function's test on validity of its arguments, I call the target function with parameter values extracted from the user's prompt.
    ``` Python
    function_response1, function_response2 = function_to_call(function_args["symbol"], function_args["date"])
    function_response = f"Lowest stock price: {function_response1}, Highest stock price: {function_response2}"
    ```
+### 5. Practical testing
+
+The last cell in the notebook helps to test everything end to end. On requested stock price for Microsoft shares from 20th of July, 2023 it correctly retrieves the lowest and highest prices of the day.
+``` PowerShell
+Recommended function call:
+{
+  "name": "get_stock_price",
+  "arguments": "{\n  \"symbol\": \"MSFT\",\n  \"date\": \"2023-07-20\"\n}"
+}
+
+Getting stock price for MSFT on 2023-07-20
+Output of function call:
+Lowest stock price: 345.3700, Highest stock price: 357.9700
+
+Messages in second request:
+{'role': 'user', 'content': 'What was the stock price of Microsoft shares on 20th of July 2023?'}
+{'role': 'assistant', 'name': 'get_stock_price', 'content': '{\n  "symbol": "MSFT",\n  "date": "2023-07-20"\n}'}
+{'role': 'function', 'name': 'get_stock_price', 'content': 'Lowest stock price: 345.3700, Highest stock price: 357.9700'}
+
+{
+  "role": "assistant",
+  "content": "On the 20th of July 2023, the stock price of Microsoft (MSFT) had a low of $345.37 and a high of $357.97."
+}
+```
