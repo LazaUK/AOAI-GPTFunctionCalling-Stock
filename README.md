@@ -24,4 +24,32 @@ def get_stock_price(symbol, date):
         return "NA", "NA"
 ```
 
+### 2. JSON structure for GPT function definition
+
+Azure OpenAI GPT models v0613 were trained to understand function structure that contain "**name**" and "**parameters**" fields. In my example, I indicate that the mddel can extract and match 2 mandatory properties: stock symbol for requested company and date in _YYYY-MM-DD_ format.
+
+``` JSON
+functions = [
+    {
+        "name": "get_stock_price",
+        "description": "Retrieve lowest and highest stock price for a given stock symbol and date",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "symbol": {
+                    "type": "string",
+                    "description": "Stock symbol, for example MSFT for Microsoft"
+                },
+                "date": {
+                    "type": "string",
+                    "description": "Date in YYYY-MM-DD format"
+                }
+            },
+            "required": ["symbol", "date"],
+        }   
+    }
+]
+```
+
+
 <TBU: I'll document here the logic of the code>
