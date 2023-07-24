@@ -4,9 +4,12 @@ As of 20th of July 2023, Azure OpenAI now supports the use of Function Calling w
 
 ### 0. Pre-requisites:
 
-1. Install the latest version of openai Python package and **openai.api_version** variable to July 2023 version or above;
-2. Retrieve Azure OpenAI GPT model deployment name, API endpoint and API key and assign them to "**OPENAI_API_DEPLOY**", "**OPENAI_API_BASE**" and "**OPENAI_API_KEY**" environment variables;
-3. Retrieve your Alpha Vantage API key and assign it to "**ALPHAVANTAGE_API_KEY**" environment variable.
+1. Install the latest version of openai Python package and set **openai.api_version** code variable to July 2023 version or above;
+    ``` Python
+    openai.api_version = "2023-07-01-preview"
+    ```
+3. Retrieve GPT model deployment name, API endpoint and API key from Azure OpenAI settings and assign them to "**OPENAI_API_DEPLOY**", "**OPENAI_API_BASE**" and "**OPENAI_API_KEY**" environment variables, respectively;
+4. Generator your Alpha Vantage API key on the vendor's Web site and assign it to "**ALPHAVANTAGE_API_KEY**" environment variable.
 
 ### 1. Function to get stock price from Alpha Vantage API:
 
