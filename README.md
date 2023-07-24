@@ -85,7 +85,7 @@ This helper function follows 3-step logic:
 ### 5. Practical testing:
 
 The last cell in the notebook helps to test everything end to end. On requested stock price for Microsoft shares from 20th of July, 2023 it correctly retrieves the lowest and highest prices of the day.
-``` PowerShell
+``` JSON
 Recommended function call:
 {
   "name": "get_stock_price",
